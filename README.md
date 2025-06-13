@@ -1,16 +1,94 @@
-# gamified_reward_tracker
+# 📱 Reward Tracker
 
-A new Flutter project.
+This Flutter project simulates the reception of a Firebase Cloud Messaging (FCM) alert (e.g., "Screen time limit exceeded") and displays it as a toast notification. It's part of the **Gamified Reward Tracker** app and is useful for testing in-app notification behavior without setting up real Firebase infrastructure.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 🚀 Features
 
-A few resources to get you started if this is your first Flutter project:
+- Simulates Firebase alerts with a button click
+- Displays toast notifications (using `fluttertoast`)
+- Clean and simple UI
+- Easy integration with existing dashboard/navigation flows
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 📸 Preview
+
+| Screen | Description |
+|--------|-------------|
+| ![Home](screenshots/home.png) | Tap the button to simulate a Firebase alert |
+
+---
+
+## 🛠️ Setup Instructions
+
+1. **Clone the repo**
+   ```bash
+   git clone https://github.com/yourusername/gamified_reward_tracker.git
+   cd gamified_reward_tracker
+   ```
+
+2. **Install dependencies**
+   ```bash
+   flutter pub get
+   ```
+
+3. **Run the app**
+   ```bash
+   flutter run
+   ```
+
+---
+
+## 📦 Dependencies
+
+- [fluttertoast](https://pub.dev/packages/fluttertoast)
+
+Add to `pubspec.yaml`:
+```yaml
+dependencies:
+  fluttertoast: ^8.2.2
+```
+
+---
+
+## 📂 Project Structure
+
+```
+lib/
+├── main.dart                  # Entry point with simulation logic
+├── pages/
+│   └── dashboard.dart         # Placeholder for main dashboard
+test/
+└── widget_test.dart           # Widget tests
+```
+
+---
+
+## 🔔 Simulate a Firebase Message
+
+The `simulateFirebaseMessage()` function displays a toast:
+
+```dart
+void simulateFirebaseMessage() {
+  Fluttertoast.showToast(
+    msg: "Screen time limit exceeded",
+    toastLength: Toast.LENGTH_LONG,
+    gravity: ToastGravity.BOTTOM,
+  );
+}
+```
+
+---
+
+## 👨‍💻 Author
+
+- **Ojas-Berdia23** — [@yourGitHub](https://github.com/Ojas-Berdia23)
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
