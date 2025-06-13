@@ -84,7 +84,7 @@ void simulateFirebaseMessage() {
 
 ## 👨‍💻 Author
 
-- **Ojas-Berdia23** — [@yourGitHub](https://github.com/Ojas-Berdia23)
+- **GitHub** — [@Ojas-Berdia23](https://github.com/Ojas-Berdia23)
 
 ---
 
