@@ -41,18 +41,6 @@ This Flutter project simulates the reception of a Firebase Cloud Messaging (FCM)
 
 ---
 
-## 📦 Dependencies
-
-- [fluttertoast](https://pub.dev/packages/fluttertoast)
-
-Add to `pubspec.yaml`:
-```yaml
-dependencies:
-  fluttertoast: ^8.2.2
-```
-
----
-
 ## 📂 Project Structure
 
 ```
@@ -87,8 +75,4 @@ void simulateFirebaseMessage() {
 - **GitHub** — [@Ojas-Berdia23](https://github.com/Ojas-Berdia23)
 
 ---
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
