@@ -25,14 +25,14 @@ class RewardPage extends StatelessWidget {
           centerTitle: true,
           leading: Container(
             margin: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: const Color(0xffF7F8F8),
+              borderRadius: BorderRadius.circular(10),
+            ),
             child: SvgPicture.asset(
               'assets/icons/logo.svg',
               height: 20,
               width: 20,
-            ),
-            decoration: BoxDecoration(
-              color: const Color(0xffF7F8F8),
-              borderRadius: BorderRadius.circular(10),
             ),
           ),
           bottom: const TabBar(
@@ -67,41 +67,37 @@ class RewardsTab extends StatefulWidget {
 
 class _RewardsTabState extends State<RewardsTab> with TickerProviderStateMixin {
   final int currentPoints = 84;
-  late final AnimationController _lottieController75;
-  late final AnimationController _lottieController100;
+  late final AnimationController _controller75;
+  late final AnimationController _controller100;
 
   @override
   void initState() {
     super.initState();
-    _lottieController75 = AnimationController(vsync: this);
-    _lottieController100 = AnimationController(vsync: this);
+    _controller75 = AnimationController(vsync: this);
+    _controller100 = AnimationController(vsync: this);
   }
 
   @override
   void dispose() {
-    _lottieController75.dispose();
-    _lottieController100.dispose();
+    _controller75.dispose();
+    _controller100.dispose();
     super.dispose();
   }
 
-  void _onClaim(int rewardPoints, AnimationController controller) {
-    if (currentPoints >= rewardPoints) {
+  void _onClaim(int points, AnimationController controller) {
+    if (currentPoints >= points) {
       controller.forward(from: 0);
-      // Add redeem logic here
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('🎉 Claimed reward for $rewardPoints points!'),
+          content: Text('🎉 Claimed reward for $points points!'),
           backgroundColor: Colors.green,
         ),
       );
     }
   }
 
-  Widget _buildRewardCard({
-    required int rewardPoints,
-    required AnimationController lottieController,
-  }) {
-    final bool redeemable = currentPoints >= rewardPoints;
+  Widget _buildRewardCard(int points, AnimationController controller) {
+    final bool isRedeemable = currentPoints >= points;
 
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 12),
@@ -111,28 +107,22 @@ class _RewardsTabState extends State<RewardsTab> with TickerProviderStateMixin {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '$rewardPoints Points Reward',
+              '$points Points Reward',
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Lottie.asset(
               'assets/animations/redeem.json',
-              controller: lottieController,
+              controller: controller,
               height: 60,
               repeat: false,
-              onLoaded: (composition) {
-                lottieController.duration = composition.duration;
-              },
+              onLoaded: (comp) => controller.duration = comp.duration,
             ),
             const SizedBox(height: 12),
             ElevatedButton(
-              onPressed: redeemable
-                  ? () => _onClaim(rewardPoints, lottieController)
-                  : null,
+              onPressed: isRedeemable ? () => _onClaim(points, controller) : null,
               style: ElevatedButton.styleFrom(
-                backgroundColor: redeemable
-                    ? const Color(0xFFD4AF37)
-                    : Colors.grey,
+                backgroundColor: isRedeemable ? const Color(0xFFD4AF37) : Colors.grey,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
@@ -153,23 +143,14 @@ class _RewardsTabState extends State<RewardsTab> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Container(
-        color: Colors.white,
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            RewardProgressSection(currentPoints: currentPoints, goalPoints: 100),
-            _buildRewardCard(
-              rewardPoints: 75,
-              lottieController: _lottieController75,
-            ),
-            _buildRewardCard(
-              rewardPoints: 100,
-              lottieController: _lottieController100,
-            ),
-          ],
-        ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          RewardProgressSection(currentPoints: currentPoints, goalPoints: 100),
+          _buildRewardCard(75, _controller75),
+          _buildRewardCard(100, _controller100),
+        ],
       ),
     );
   }
@@ -200,21 +181,16 @@ class RewardProgressSection extends StatelessWidget {
   });
 
   List<Widget> _buildEarnedBadges() {
-    final milestones = [25, 50, 75, 100, 125];
-
+    const milestones = [25, 50, 75, 100, 125];
     return milestones.map((milestone) {
-      final isEarned = currentPoints >= milestone;
+      final bool earned = currentPoints >= milestone;
       return Padding(
-        padding: const EdgeInsets.only(right: 12.0), // spacing between badges
+        padding: const EdgeInsets.only(right: 12),
         child: Opacity(
-          opacity: isEarned ? 1.0 : 0.3,
+          opacity: earned ? 1.0 : 0.3,
           child: Column(
             children: [
-              SvgPicture.asset(
-                'assets/icons/badges.svg',
-                height: 48,
-                width: 48,
-              ),
+              SvgPicture.asset('assets/icons/badges.svg', height: 48, width: 48),
               const SizedBox(height: 4),
               Text(
                 '$milestone',
@@ -237,16 +213,16 @@ class RewardProgressSection extends StatelessWidget {
     final double progress = currentPoints / goalPoints;
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 20), // Outer margin
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20), // Inner padding
+      margin: const EdgeInsets.symmetric(vertical: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       decoration: BoxDecoration(
         color: const Color(0xFFF9F9F9),
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Colors.black12,
             blurRadius: 6,
-            offset: const Offset(0, 3),
+            offset: Offset(0, 3),
           ),
         ],
       ),
@@ -262,16 +238,11 @@ class RewardProgressSection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-
-          // Horizontal badges
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            child: Row(
-              children: _buildEarnedBadges(),
-            ),
+            child: Row(children: _buildEarnedBadges()),
           ),
           const SizedBox(height: 24),
-
           const Text(
             'Reward Progress',
             style: TextStyle(
@@ -281,9 +252,7 @@ class RewardProgressSection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-
           Row(
-            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
@@ -295,7 +264,6 @@ class RewardProgressSection extends StatelessWidget {
                 ),
               ),
               Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     '$goalPoints',
@@ -306,11 +274,7 @@ class RewardProgressSection extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 4),
-                  SvgPicture.asset(
-                    'assets/icons/star.svg',
-                    width: 22,
-                    height: 22,
-                  ),
+                  SvgPicture.asset('assets/icons/star.svg', width: 22, height: 22),
                 ],
               ),
             ],
@@ -318,10 +282,7 @@ class RewardProgressSection extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             '$remaining★ until your next Reward',
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.black54,
-            ),
+            style: const TextStyle(fontSize: 16, color: Colors.black54),
           ),
           const SizedBox(height: 16),
           ClipRRect(
@@ -330,9 +291,7 @@ class RewardProgressSection extends StatelessWidget {
               value: progress,
               minHeight: 14,
               backgroundColor: const Color(0xFFE0D7B1),
-              valueColor: const AlwaysStoppedAnimation<Color>(
-                Color(0xFFD4AF37),
-              ),
+              valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFD4AF37)),
             ),
           ),
         ],
@@ -340,11 +299,3 @@ class RewardProgressSection extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-
-
